@@ -9,7 +9,6 @@
 import UIKit
 
 private let globalInstance = SwiftMessages()
-// zyijie / edit this
 /**
  The `SwiftMessages` class provides the interface for showing and hiding messages.
  It behaves like a queue, only showing one message at a time. Message views that
@@ -318,6 +317,12 @@ open class SwiftMessages {
          */
         public var shouldAutorotate = true
 
+        /**
+         when shouldAutorotate is false , will get this
+         if shouldAutorotate is true , supportedOrientations = all
+         */
+        public var supportedOrientations: UIInterfaceOrientationMask?
+        
         /**
          Specified whether or not duplicate `Identifiable` messages are ignored.
          The default is `true`.

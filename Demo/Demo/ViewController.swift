@@ -143,6 +143,7 @@ class ViewController: UITableViewController {
         var config = SwiftMessages.defaultConfig
         config.presentationContext = .window(windowLevel: UIWindow.Level.statusBar)
         config.duration = .forever
+        config.shouldAutorotate = false
         config.presentationStyle = .bottom
         config.dimMode = .gray(interactive: true)
         SwiftMessages.show(config: config, view: view)

@@ -13,6 +13,18 @@ open class WindowViewController: UIViewController
     override open var shouldAutorotate: Bool {
         return config.shouldAutorotate
     }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        if config.shouldAutorotate {
+            return super.supportedInterfaceOrientations
+        }else {
+            if let mask = config.supportedOrientations {
+                return mask
+            }else {
+                return super.supportedInterfaceOrientations
+            }
+        }
+    }
 
     convenience public init() {
         self.init(config: SwiftMessages.Config())
