@@ -9,7 +9,7 @@
 import UIKit
 
 private let globalInstance = SwiftMessages()
-
+// zyijie / edit this
 /**
  The `SwiftMessages` class provides the interface for showing and hiding messages.
  It behaves like a queue, only showing one message at a time. Message views that
