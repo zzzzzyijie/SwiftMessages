@@ -13,7 +13,7 @@ protocol PresenterDelegate: AnimationDelegate {
 }
 
 class Presenter: NSObject {
-
+    
     // MARK: - API
 
     init(config: SwiftMessages.Config, view: UIView, delegate: PresenterDelegate) {
