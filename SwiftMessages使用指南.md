@@ -206,6 +206,93 @@ config.dimMode = .color(color: UIColor.black.withAlphaComponent(0.7), interactiv
 config.dimMode = .blur(style: .dark, alpha: 1.0, interactive: true)
 ```
 
+### 消息优先级（Priority）⭐️ NEW
+
+SwiftMessages 在 **10.0.2 版本**中新增了原生优先级支持！通过设置 `priority` 值来控制消息在队列中的显示顺序。
+
+```swift
+// 默认优先级为 0
+config.priority = 0
+
+// 正数优先级：数值越大，越优先显示
+var highPriorityConfig = SwiftMessages.Config()
+highPriorityConfig.priority = 10
+SwiftMessages.show(config: highPriorityConfig, view: urgentView)
+
+var normalConfig = SwiftMessages.Config()
+normalConfig.priority = 0
+SwiftMessages.show(config: normalConfig, view: normalView)
+
+// 负数优先级：数值越小，越靠后显示
+var lowPriorityConfig = SwiftMessages.Config()
+lowPriorityConfig.priority = -10
+SwiftMessages.show(config: lowPriorityConfig, view: infoView)
+```
+
+**优先级规则：**
+- 优先级值为 `Int` 类型，可以是正数、负数或零
+- 数值越大，优先级越高，越先显示
+- 默认值为 `0`
+- 队列在出队时会自动按优先级降序排序
+
+**使用场景：**
+
+```swift
+// 场景1：系统错误优先于普通提示
+let errorView = MessageView.viewFromNib(layout: .cardView)
+errorView.configureTheme(.error)
+errorView.configureContent(title: "系统错误", body: "请联系管理员")
+
+var errorConfig = SwiftMessages.Config()
+errorConfig.priority = 100  // 最高优先级
+SwiftMessages.show(config: errorConfig, view: errorView)
+
+let infoView = MessageView.viewFromNib(layout: .cardView)
+infoView.configureTheme(.info)
+infoView.configureContent(title: "提示", body: "这是一条普通消息")
+
+var infoConfig = SwiftMessages.Config()
+infoConfig.priority = 0  // 普通优先级
+SwiftMessages.show(config: infoConfig, view: infoView)
+
+// 即使 infoView 先调用 show()，errorView 也会先显示
+```
+
+```swift
+// 场景2：定义优先级常量
+enum MessagePriority {
+    static let critical = 100    // 严重错误
+    static let high = 50         // 重要提醒
+    static let normal = 0        // 普通消息
+    static let low = -50         // 次要信息
+}
+
+var config = SwiftMessages.Config()
+config.priority = MessagePriority.critical
+SwiftMessages.show(config: config, view: criticalView)
+```
+
+```swift
+// 场景3：网络请求失败插队显示
+// 先显示加载消息
+var loadingConfig = SwiftMessages.Config()
+loadingConfig.priority = 0
+loadingConfig.duration = .forever
+SwiftMessages.show(config: loadingConfig, view: loadingView)
+
+// 如果网络失败，高优先级错误消息会插队
+DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+    var errorConfig = SwiftMessages.Config()
+    errorConfig.priority = 50  // 高优先级
+    SwiftMessages.show(config: errorConfig, view: networkErrorView)
+}
+```
+
+**注意事项：**
+- 已经显示的消息不受优先级影响，优先级仅影响队列中的消息
+- 如果当前没有消息正在显示，即使优先级低的消息也会立即显示
+- 优先级相同时，按照添加到队列的先后顺序显示
+
 ### 设置默认配置
 
 ```swift
